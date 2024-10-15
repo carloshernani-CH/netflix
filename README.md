@@ -1,33 +1,87 @@
-# netflix
+# Preditor de Avaliação de Filmes
 
-Aps 5
+Este projeto é um sistema de predição de notas de filmes desenvolvido como parte do desafio "O Desafio Netflix". O objetivo é prever a nota que um usuário daria a um filme que ele ainda não avaliou, utilizando a técnica de Decomposição em Valores Singulares (SVD) e comparar as previsões com as notas reais. A precisão dessas previsões é avaliada através de um histograma dos erros de predição com base em perturbações aleatórias no conjunto de dados.
 
-Se você vai *desenvolver* deste repositório, vá para o [guia de desenvolvimento](README_DEV.md).
+## Visão Geral do Projeto
 
-## Instalando netflix:
+Serviços de streaming, como a Netflix, enfrentam o desafio de personalizar recomendações em um vasto catálogo de conteúdo. Normalmente, os usuários consomem uma pequena parte desse catálogo, então é fundamental entender suas preferências para recomendar itens relevantes. Este projeto propõe resolver esse problema ao prever que nota um usuário daria a um filme que ainda não assistiu, com base no comportamento passado.
 
-Lembre-se de seguir essas instruções de dentro do seu ambiente virtual preferido:
+### Dataset
 
-    conda create -n netflix python=3.11
-    conda activate netflix
+Utilizamos o [The Movies Dataset](https://www.kaggle.com/datasets/rounakbanik/the-movies-dataset), com foco no arquivo `ratings.csv` (ou sua versão menor, `ratings_small.csv`). Este dataset contém avaliações de usuários sobre diversos filmes.
+Caso queira testar basta colocar os arquivos juntos desta pasta para rodar o demo.py.
 
-A primeira maneira é clonar o repositório e fazer uma instalação local:
+A matriz $A$ é construída da seguinte forma:
+- Linhas representam usuários (`userId`).
+- Colunas representam filmes (`movieId`).
+- O conteúdo da matriz são as notas que o usuário atribuiu aos filmes.
 
-    git clone https://github.com/carloshernani-CH/netflix.git
-    cd netflix
-    pip install .
+### Descrição do Problema
 
-A segunda maneira é instalar diretamente
+O objetivo é prever a nota que um usuário daria a um filme que ele ainda não avaliou. Os passos para isso são os seguintes:
+1. Um valor aleatório na matriz $A$ é selecionado e substituído por um valor aleatório, gerando uma nova matriz $B$.
+2. O sistema utiliza a matriz $B$ (com o valor aleatório) para prever o valor original da avaliação, sem acesso direto à matriz $A$.
+3. Esse processo é repetido diversas vezes para gerar um histograma dos erros entre as previsões e os valores reais.
 
-    pip install git+https://github.com/carloshernani-CH/netflix.git
+### Abordagem Matemática
 
-Para desinstalar, use:
+A abordagem utilizada baseia-se na decomposição da matriz $A$ em três componentes por meio da **Decomposição em Valores Singulares (SVD)**:
 
-    pip uninstall install netflix
+$$
+A = U \Sigma V^T
+$$
 
-## Uso
+Onde:
+- $U$: representa os fatores dos usuários.
+- $\Sigma$: é uma matriz diagonal com os valores singulares.
+- $V^T$: representa os fatores dos filmes.
 
-Para encontrar todos os comandos implementados, execute:
+Ao reduzir essas matrizes para um número menor de dimensões, retemos apenas os componentes mais significativos, o que nos permite aproximar a matriz original e prever os valores faltantes.
 
-    netflix-cli --help
+### Implementação
 
+O arquivo `demo.py` implementa todo o processo, incluindo o carregamento do dataset, a decomposição da matriz e a geração do histograma de erros.
+
+O script segue os seguintes passos principais:
+1. **Carregamento do Dataset**: O usuário é solicitado a escolher entre `ratings.csv` ou `ratings_small.csv`.
+2. **Construção da Matriz**: O dataset é transformado em uma matriz onde as linhas representam usuários e as colunas representam filmes, com os valores correspondendo às notas.
+3. **Perturbação Aleatória**: Um valor aleatório na matriz é substituído por um valor randômico, criando a matriz $B$.
+4. **Decomposição SVD**: A matriz $B$ é decomposta usando SVD, e apenas os 50 principais componentes são mantidos.
+5. **Predição da Nota**: O valor original é previsto com base nos componentes reduzidos.
+6. **Cálculo do Erro**: O erro entre o valor previsto e o valor real é calculado e armazenado.
+7. **Histograma de Erros**: Após 1000 iterações, um histograma dos erros de predição é exibido.
+
+### Como Executar o Código
+
+Para executar o projeto, siga os passos abaixo:
+
+1. Clone o repositório.
+2. Instale as bibliotecas necessárias executando:
+
+    ```bash
+    pip install -r requirements.txt
+    ```
+
+3. Execute o arquivo `demo.py`:
+
+    ```bash
+    python demo.py
+    ```
+
+4. Escolha o dataset que deseja utilizar (`1` para `ratings_small.csv`, `2` para `ratings.csv`).
+
+5. Após a conclusão do script, será exibido um histograma dos erros de predição, mostrando a distribuição dos erros ao longo de 1000 predições.
+
+### Resultados
+
+O sistema avalia suas predições comparando o valor previsto com o valor real de uma avaliação perturbada aleatoriamente. O histograma gerado mostra a distribuição dos erros, o que ajuda a avaliar a precisão do modelo. Idealmente, os erros devem ser pequenos, indicando previsões precisas.
+
+O histograma fornece insights sobre como o sistema generaliza suas predições e se ele poderia ser utilizado em produção. Se as taxas de erro forem consistentemente baixas, o sistema pode ser adequado para aplicações reais.
+
+### Conclusão
+
+Com base nos resultados obtidos, o sistema demonstra um bom desempenho na predição de notas de filmes utilizando técnicas de fatoração de matriz. No entanto, mais testes, incluindo testes de estresse (veja abaixo), são necessários para verificar sua robustez em cenários maiores ou com entradas mais ruidosas.
+
+### Conclusão Sobre a Utilização em Produção
+
+Dado que os erros observados no histograma são relativamente pequenos, esta abordagem tem potencial para ser utilizada em sistemas de recomendação. Entretanto, testes extensivos em datasets maiores e em diversas condições são necessários para confirmar se o modelo pode ser implantado em um ambiente de produção.

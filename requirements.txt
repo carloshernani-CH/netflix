@@ -1,4 +1,3 @@
-numpy
 pandas
-typer
-rich
+numpy
+matplotlib
