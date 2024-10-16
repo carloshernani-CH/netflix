@@ -70,7 +70,7 @@ Para executar o projeto, siga os passos abaixo:
 
 
 
-5. Após a conclusão do script, será exibido um histograma dos erros de predição, mostrando a distribuição dos erros ao longo de 1000 predições.
+5. Após a conclusão do script, será exibido um histograma dos erros de predição, mostrando a distribuição dos erros ao longo de 100 predições.
 
 ### Resultados
 

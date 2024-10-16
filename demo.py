@@ -39,7 +39,7 @@ predicted_value = B_approx[i, j]
 errors = []
 
 # Número de estimativas
-n_estimates = 1000
+n_estimates = 100
 
 for _ in range(n_estimates):
     # Selecionar uma posição aleatória
