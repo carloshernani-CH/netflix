@@ -8,8 +8,8 @@ Serviços de streaming, como a Netflix, enfrentam o desafio de personalizar reco
 
 ### Dataset
 
-Utilizamos o [The Movies Dataset](https://www.kaggle.com/datasets/rounakbanik/the-movies-dataset), com foco no arquivo `ratings.csv` (ou sua versão menor, `ratings_small.csv`). Este dataset contém avaliações de usuários sobre diversos filmes.
-Caso queira testar basta colocar os arquivos juntos desta pasta para rodar o demo.py.
+Utilizamos o [The Movies Dataset](https://www.kaggle.com/datasets/rounakbanik/the-movies-dataset), com foco no arquivo `ratings_small.csv` (a versão menor do `ratings.csv`). Este dataset contém avaliações de usuários sobre diversos filmes.
+
 
 A matriz $A$ é construída da seguinte forma:
 - Linhas representam usuários (`userId`).
@@ -43,7 +43,7 @@ Ao reduzir essas matrizes para um número menor de dimensões, retemos apenas os
 O arquivo `demo.py` implementa todo o processo, incluindo o carregamento do dataset, a decomposição da matriz e a geração do histograma de erros.
 
 O script segue os seguintes passos principais:
-1. **Carregamento do Dataset**: O usuário é solicitado a escolher entre `ratings.csv` ou `ratings_small.csv`.
+1. **Carregamento do Dataset**: O usuário carrega `ratings_small.csv`.
 2. **Construção da Matriz**: O dataset é transformado em uma matriz onde as linhas representam usuários e as colunas representam filmes, com os valores correspondendo às notas.
 3. **Perturbação Aleatória**: Um valor aleatório na matriz é substituído por um valor randômico, criando a matriz $B$.
 4. **Decomposição SVD**: A matriz $B$ é decomposta usando SVD, e apenas os 50 principais componentes são mantidos.
@@ -68,7 +68,7 @@ Para executar o projeto, siga os passos abaixo:
     python demo.py
     ```
 
-4. Escolha o dataset que deseja utilizar (`1` para `ratings_small.csv`, `2` para `ratings.csv`).
+
 
 5. Após a conclusão do script, será exibido um histograma dos erros de predição, mostrando a distribuição dos erros ao longo de 1000 predições.
 
@@ -80,7 +80,12 @@ O histograma fornece insights sobre como o sistema generaliza suas predições e
 
 ### Conclusão
 
-Com base nos resultados obtidos, o sistema demonstra um bom desempenho na predição de notas de filmes utilizando técnicas de fatoração de matriz. No entanto, mais testes, incluindo testes de estresse (veja abaixo), são necessários para verificar sua robustez em cenários maiores ou com entradas mais ruidosas.
+![Histograma dos Erros](Figure_1.png)
+
+Com base nos resultados obtidos, o sistema demonstra um bom desempenho na predição de notas de filmes utilizando técnicas de fatoração de matriz de forma razoável como é mostrado abaixo, se mostrando eficiente pois a maioria dos erros se encontra no 0. 
+
+
+
 
 ### Conclusão Sobre a Utilização em Produção
 
